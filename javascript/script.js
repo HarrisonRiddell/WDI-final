@@ -71,7 +71,7 @@ function create() {
 
 
   ///////////////////////////////////////////////////////
-  //                     PLAYER 1                      //
+  //                CREATE - PLAYER 1                  //
   ///////////////////////////////////////////////////////
   player1 = game.add.sprite(32, game.world.height - 150, 'detective');
   player1.scale.setTo(1, 1);
@@ -83,7 +83,7 @@ function create() {
   player1.animations.add('left', [5,6,7,8], 10, true);
 
   ///////////////////////////////////////////////////////
-  //                     PLAYER 2                      //
+  //                CREATE - PLAYER 2                  //
   ///////////////////////////////////////////////////////
   player2 = game.add.sprite(game.world.width - 64, game.world.height - 150, 'robber');
   player2.scale.setTo(1, 1);
@@ -95,7 +95,7 @@ function create() {
   player2.animations.add('left', [5,6,7,8], 10, true);
 
   ///////////////////////////////////////////////////////
-  //                     OBJECTS                       //
+  //                CREATE - OBJECTS                   //
   ///////////////////////////////////////////////////////
   glasses = game.add.group()
   glasses.enableBody = true;
@@ -116,9 +116,9 @@ function create() {
     weapon.body.bounce.y = 0.4 + Math.random()*0.2;
   }
 
-  scoreText1 = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+  scoreTextDetective = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
   
-  scoreText2 = game.add.text(game.world.width - 150, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+  scoreTextRobber = game.add.text(game.world.width - 150, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
   
   TimerText = game.add.text(550, 16, 'Timer: 30', {fill: '#000'});
 
@@ -140,93 +140,75 @@ function update() {
 
 
   ///////////////////////////////////////////////////////
-  //                 PLAYER 1 MOVEMENT                 //
+  //            UPDATE - PLAYER 1 MOVEMENT             //
   ///////////////////////////////////////////////////////
-    player1.body.velocity.x = 0;
+  player1.body.velocity.x = 0;
 
-    if (game.input.keyboard.addKey(Phaser.Keyboard.A).isDown) {
-        player1.body.velocity.x = -200;
-        player1.animations.play('left');
-    } else if (game.input.keyboard.addKey(Phaser.Keyboard.D).isDown) {
-        player1.body.velocity.x = 200;
-        player1.animations.play('right');
-    } else {
-        player1.animations.stop();
-        player1.frame = 4;
-    }
-    if (game.input.keyboard.addKey(Phaser.Keyboard.W).isDown && player1.body.touching.down) {
-        player1.body.velocity.y = -350;
-    }
-    if (game.input.keyboard.addKey(Phaser.Keyboard.S).isDown) {
-      player1.body.velocity.y = 200;
-    }
+  if (game.input.keyboard.addKey(Phaser.Keyboard.A).isDown) {
+      player1.body.velocity.x = -200;
+      player1.animations.play('left');
+  } else if (game.input.keyboard.addKey(Phaser.Keyboard.D).isDown) {
+      player1.body.velocity.x = 200;
+      player1.animations.play('right');
+  } else {
+      player1.animations.stop();
+      player1.frame = 4;
+  }
+  if (game.input.keyboard.addKey(Phaser.Keyboard.W).isDown && player1.body.touching.down) {
+      player1.body.velocity.y = -350;
+  }
+  if (game.input.keyboard.addKey(Phaser.Keyboard.S).isDown) {
+    player1.body.velocity.y = 200;
+  }
 
   ///////////////////////////////////////////////////////
-  //                 PLAYER 2 MOVEMENT                 //
-  ///////////////////////////////////////////////////////
-    player2.body.velocity.x = 0;
+  //            UPDATE - PLAYER 2 MOVEMENT             //
+  /////////////////////////////////////////////////////// 
+  player2.body.velocity.x = 0;
 
-    if (cursors.left.isDown) {
-        player2.body.velocity.x = -250;
-        player2.animations.play('left');
-    } else if (cursors.right.isDown) {
-        player2.body.velocity.x = 250;
+  if (cursors.left.isDown) {
+      player2.body.velocity.x = -250;
+      player2.animations.play('left');
+  } else if (cursors.right.isDown) {
+      player2.body.velocity.x = 250;
 
-        player2.animations.play('right');
-    } else {
-        player2.animations.stop();
-        player2.frame = 4;
-    }
-    if (cursors.up.isDown && player2.body.touching.down) {
-        player2.body.velocity.y = -350;
-    }
-    if (cursors.down.isDown) {
-      player2.body.velocity.y = 250;
-    }
+      player2.animations.play('right');
+  } else {
+      player2.animations.stop();
+      player2.frame = 4;
+  }
+  if (cursors.up.isDown && player2.body.touching.down) {
+      player2.body.velocity.y = -350;
+  }
+  if (cursors.down.isDown) {
+    player2.body.velocity.y = 250;
+  }
 } //update
 
 ///////////////////////////////////////////////////////
 //                  COLLECT OBJECTS                  //
 ///////////////////////////////////////////////////////
+
 function collectWeapon(player1, weapon) {
   weapon.kill();
-  score += 10;
-  scoreText1.text = 'Score: ' + score;
-  scoring1()
+  scoreDetective += 10;
+  scoreTextDetective.text = 'Score: ' + score;
+  scoringDetective();
 } // collectWeapon
+
 function collectGlass(player2, glass) {
   glass.kill();
-  score += 10;
-  scoreText2.text = 'Score: ' + score;
-  scoring2();
+  scoreRobber += 10;
+  scoreTextRobber.text = 'Score: ' + score;
+  scoringRobber();
 } // collectGlass
-
-function scoring1() {
-  if (score1 == 50) {
-    clearTimer();
-    restart = true;
-  }
-}
 
 var timer = 30;
 
 var myInterval = setInterval(function() {
   timer --
-  console.log(timer)
-  TimerText.text = 'Timer ' + timer
-  if (timer == 0) {
-    // alert("you lose")
-    gameOver = true;
-    clearTimer();
-    console.log(gameOver)
-    // location.reload()
-    document.getElementById('game').innerHTML = ''
-    gameEnd();
-  }
+  TimerText.text = 'Timer: ' + timer
 },1000)
-
-
-
 
 
 
